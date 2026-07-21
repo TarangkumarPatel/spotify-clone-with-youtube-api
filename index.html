@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" href="./assets/logo.png">
+    <title>Spotify - Web Player: Music for everyone</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="main">
+        <div class="sidebar">
+            <div class="nav">
+                <div class="nav-option" id="nav-home" style="opacity: 1;">
+                    <i class="fa-solid fa-house"></i>
+                    <a href="#">Home</a>
+                </div>
+                <div class="nav-option" id="nav-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <a href="#">Search</a>
+                </div>
+            </div>
+            <div class="library">
+                <div class="options">
+                    <div class="lib-option nav-option">
+                        <img src="./assets/library_icon.png" alt="Library Icon">
+                        <a href="#">Your Library</a>
+                    </div>
+                    <div class="icons">
+                        <i class="fa-solid fa-plus" id="create-playlist-icon"></i>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+                <div id="playlists-list"></div>
+                <div class="lib-box" id="empty-library-box">
+                    <div class="box">
+                        <p class="box-p1">Create your first playlist</p>
+                        <p class="box-p2">It's easy, we'll help you</p>
+                        <button class="badge" id="create-playlist-btn">Create playlist</button>
+                    </div>
+                    <div class="box">
+                        <p class="box-p1">Let's find some podcasts to follow</p>
+                        <p class="box-p2">We'll keep you updated on new episodes</p>
+                        <button class="badge">Browse podcasts</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="sticky-nav">
+                <div class="sticky-nav-icons">
+                    <img src="./assets/backward_icon.png" alt="Backward Icon">
+                    <img src="./assets/forward_icon.png" class="hide" alt="Forward Icon">
+                </div>
+                <div class="search-bar-container hidden" id="search-bar-container">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search-input" placeholder="What do you want to play?" autocomplete="off">
+                </div>
+                <div class="sticky-nav-options">
+                    <button class="badge nav-item hide">Explore Premium</button>
+                    <button class="badge nav-item dark-badge"><i class="fa-regular fa-circle-down" style="margin-right:5px"></i>Install App</button>
+                    <i class="fa-regular fa-user nav-item"></i>
+                </div>
+            </div>
+
+            <div id="home-view">
+                <h2>Recently Played</h2>
+                <div class="cards-container" id="recently-played-cards"></div>
+
+                <h2>Trending now near you</h2>
+                <div class="cards-container" id="trending-cards"></div>
+
+                <h2>Featured Charts</h2>
+                <div class="cards-container" id="featured-cards"></div>
+            </div>
+
+            <div id="search-view" class="hidden">
+                <h2>Search Results</h2>
+                <div class="cards-container" id="search-results-cards"></div>
+            </div>
+
+            <div class="footer">
+                <div class="line"></div>
+            </div>
+        </div>
+        <div class="music-player">
+            <div class="album">
+                <img src="./assets/album_picture.jpeg" alt="Current Playing Song" class="curr-playing-img" id="curr-playing-img">
+                <div class="curr-playing-name">
+                    <p class="curr-playing-title" id="curr-playing-title">No song playing</p>
+                    <p class="curr-playing-artist" id="curr-playing-artist">Search for something to play</p>
+                </div>
+                <img src="./assets/album_icon1.png" alt="Heart Icon" class="curr-playing-icon" id="like-btn">
+                <img src="./assets/album_icon2.png" alt="Add to playlist" class="curr-playing-icon PIP-icon" id="add-to-playlist-btn" title="Add to playlist">
+            </div>
+            <div class="player">
+                <div class="player-controls">
+                    <img src="./assets/player_icon1.png" alt="Shuffle Icon" class="player-control-icon" id="shuffle-btn">
+                    <img src="./assets/player_icon2.png" alt="Back Icon" class="player-control-icon" id="prev-btn">
+                    <img src="./assets/player_icon3.png" alt="Play Icon" class="player-control-icon" id="play-pause-btn" style="opacity: 1;height:2rem;" data-state="paused">
+                    <img src="./assets/player_icon4.png" alt="Next Icon" class="player-control-icon" id="next-btn">
+                    <img src="./assets/player_icon5.png" alt="Repeat Icon" class="player-control-icon" id="repeat-btn">
+                </div>
+                <div class="playback-bar">
+                    <span class="curr-time" id="curr-time">0:00</span>
+                    <input type="range" min="0" max="100" class="progress-bar" id="progress-bar" step="1" value="0">
+                    <span class="tot-time" id="tot-time">0:00</span>
+                </div>
+            </div>
+            <div class="controls">
+                <img src="./assets/controls_icon1.png" class="controls-icon">
+                <img src="./assets/controls_icon2.png" class="controls-icon">
+                <img src="./assets/controls_icon3.png" class="controls-icon-3">
+                <img src="./assets/controls_icon4.png" class="controls-icon-4">
+                <div class="playback-bar">
+                    <img src="./assets/controls_icon5.png" class="controls-icon" id="mute-btn">
+                    <input type="range" min="0" max="100" class="progress-bar" id="volume-bar" step="1" value="100">
+                </div>
+            </div>
+        </div>
+        <div id="yt-player-mount" class="yt-player-mount"></div>
+        <br><br><br><br><br>
+    </div>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="js/main.js" type="module"></script>
+</body>
+</html>

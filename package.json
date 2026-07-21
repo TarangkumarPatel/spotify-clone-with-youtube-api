@@ -1,0 +1,15 @@
+{
+  "name": "spotify-clone-fullstack",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Spotify UI clone wired up to real search and playback via the YouTube Data API + IFrame Player API.",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node server/dev.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
