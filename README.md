@@ -52,6 +52,6 @@ style.css            → original styles untouched, small additive rules appende
 
 Playback uses the official YouTube IFrame Player, embedded (small, visible) rather than hidden — per YouTube's Terms of Service, embedded players must remain visibly rendered on the page. No audio is downloaded or ripped; this is standard, ToS-compliant embedding.
 
-## ☁️ Deploying
+## ☁️ Deployed
 
-Not deployed yet — this project is currently local-only. When ready: push to a new GitHub repo, import it into Vercel, and set `YOUTUBE_API_KEY` as an environment variable in the Vercel project settings.
+This project is deployed on Vercel
