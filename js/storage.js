@@ -5,19 +5,36 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) throw new Error("no state");
     const parsed = JSON.parse(raw);
+    const trackCache = parsed.trackCache || {};
+    // Tracks saved by older versions may still contain HTML entities (e.g. "&amp;").
+    Object.values(trackCache).forEach((track) => {
+      track.title = decodeEntities(track.title);
+      track.artist = decodeEntities(track.artist);
+    });
     return {
       likedIds: parsed.likedIds || [],
       recentlyPlayedIds: parsed.recentlyPlayedIds || [],
       playlists: parsed.playlists || [],
-      trackCache: parsed.trackCache || {},
+      trackCache,
     };
   } catch {
     return { likedIds: [], recentlyPlayedIds: [], playlists: [], trackCache: {} };
   }
 }
 
+function decodeEntities(text) {
+  if (typeof text !== "string" || !text.includes("&")) return text;
+  const el = document.createElement("textarea");
+  el.innerHTML = text;
+  return el.value;
+}
+
 function saveState(state) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // Storage full or blocked (e.g. private mode) — keep working in memory.
+  }
 }
 
 let state = loadState();
@@ -76,11 +93,10 @@ export function getPlaylists() {
 export function addTrackToPlaylist(playlistId, track) {
   cacheTrack(track);
   const playlist = state.playlists.find((p) => p.id === playlistId);
-  if (!playlist) return;
-  if (!playlist.trackIds.includes(track.id)) {
-    playlist.trackIds.push(track.id);
-    saveState(state);
-  }
+  if (!playlist || playlist.trackIds.includes(track.id)) return false;
+  playlist.trackIds.push(track.id);
+  saveState(state);
+  return true;
 }
 
 export function getPlaylistTracks(playlistId) {

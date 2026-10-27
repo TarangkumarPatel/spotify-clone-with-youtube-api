@@ -14,7 +14,7 @@
 </head>
 <body>
     <div class="main">
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
             <div class="nav">
                 <div class="nav-option" id="nav-home" style="opacity: 1;">
                     <i class="fa-solid fa-house"></i>
@@ -32,13 +32,14 @@
                         <a href="#">Your Library</a>
                     </div>
                     <div class="icons">
-                        <i class="fa-solid fa-plus" id="create-playlist-icon"></i>
-                        <i class="fa-solid fa-arrow-right"></i>
+                        <i class="fa-solid fa-plus" id="create-playlist-icon" title="Create playlist"></i>
+                        <i class="fa-solid fa-arrow-right desktop-only"></i>
+                        <i class="fa-solid fa-xmark mobile-only" id="close-library-btn" title="Close library"></i>
                     </div>
                 </div>
                 <div id="playlists-list"></div>
                 <div class="lib-box" id="empty-library-box">
-                    <div class="box">
+                    <div class="box" id="first-playlist-box">
                         <p class="box-p1">Create your first playlist</p>
                         <p class="box-p2">It's easy, we'll help you</p>
                         <button class="badge" id="create-playlist-btn">Create playlist</button>
@@ -80,7 +81,7 @@
             </div>
 
             <div id="search-view" class="hidden">
-                <h2>Search Results</h2>
+                <h2 id="search-view-title">Search Results</h2>
                 <div class="cards-container" id="search-results-cards"></div>
             </div>
 
@@ -95,16 +96,16 @@
                     <p class="curr-playing-title" id="curr-playing-title">No song playing</p>
                     <p class="curr-playing-artist" id="curr-playing-artist">Search for something to play</p>
                 </div>
-                <img src="./assets/album_icon1.png" alt="Heart Icon" class="curr-playing-icon" id="like-btn">
+                <img src="./assets/album_icon1.png" alt="Like" class="curr-playing-icon" id="like-btn" title="Save to Liked Songs">
                 <img src="./assets/album_icon2.png" alt="Add to playlist" class="curr-playing-icon PIP-icon" id="add-to-playlist-btn" title="Add to playlist">
             </div>
             <div class="player">
                 <div class="player-controls">
-                    <img src="./assets/player_icon1.png" alt="Shuffle Icon" class="player-control-icon" id="shuffle-btn">
-                    <img src="./assets/player_icon2.png" alt="Back Icon" class="player-control-icon" id="prev-btn">
-                    <img src="./assets/player_icon3.png" alt="Play Icon" class="player-control-icon" id="play-pause-btn" style="opacity: 1;height:2rem;" data-state="paused">
-                    <img src="./assets/player_icon4.png" alt="Next Icon" class="player-control-icon" id="next-btn">
-                    <img src="./assets/player_icon5.png" alt="Repeat Icon" class="player-control-icon" id="repeat-btn">
+                    <img src="./assets/player_icon1.png" alt="Shuffle" class="player-control-icon" id="shuffle-btn" title="Enable shuffle">
+                    <img src="./assets/player_icon2.png" alt="Previous" class="player-control-icon" id="prev-btn" title="Previous">
+                    <img src="./assets/player_icon3.png" alt="Play" class="player-control-icon" id="play-pause-btn" style="opacity: 1;height:2rem;" data-state="paused" title="Play">
+                    <img src="./assets/player_icon4.png" alt="Next" class="player-control-icon" id="next-btn" title="Next">
+                    <img src="./assets/player_icon5.png" alt="Repeat" class="player-control-icon" id="repeat-btn" title="Enable repeat">
                 </div>
                 <div class="playback-bar">
                     <span class="curr-time" id="curr-time">0:00</span>
@@ -117,16 +118,33 @@
                 <img src="./assets/controls_icon2.png" class="controls-icon">
                 <img src="./assets/controls_icon3.png" class="controls-icon-3">
                 <img src="./assets/controls_icon4.png" class="controls-icon-4">
+                <i class="fa-solid fa-expand video-toggle-icon" id="video-toggle-btn" title="Maximise video"></i>
                 <div class="playback-bar">
-                    <img src="./assets/controls_icon5.png" class="controls-icon" id="mute-btn">
+                    <img src="./assets/controls_icon5.png" class="controls-icon" id="mute-btn" alt="Mute" title="Mute">
                     <input type="range" min="0" max="100" class="progress-bar" id="volume-bar" step="1" value="100">
                 </div>
             </div>
         </div>
-        <div id="yt-player-mount" class="yt-player-mount"></div>
-        <br><br><br><br><br>
+        <div class="video-backdrop hidden" id="video-backdrop"></div>
+        <div class="video-dock" id="video-dock">
+            <div class="video-dock-bar">
+                <span class="video-dock-label" id="video-dock-label">Video</span>
+                <button type="button" class="video-dock-btn" id="video-dock-toggle" title="Maximise video" aria-label="Maximise video">
+                    <i class="fa-solid fa-expand"></i>
+                </button>
+            </div>
+            <div class="video-dock-frame">
+                <div id="yt-player-mount"></div>
+            </div>
+        </div>
+        <nav class="mobile-nav" id="mobile-nav">
+            <button type="button" class="mobile-nav-item active" data-target="home"><i class="fa-solid fa-house"></i><span>Home</span></button>
+            <button type="button" class="mobile-nav-item" data-target="search"><i class="fa-solid fa-magnifying-glass"></i><span>Search</span></button>
+            <button type="button" class="mobile-nav-item" data-target="library"><img src="./assets/library_icon.png" alt=""><span>Your Library</span></button>
+        </nav>
+        <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
     </div>
-    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://www.youtube.com/iframe_api" async></script>
     <script src="js/main.js" type="module"></script>
 </body>
 </html>

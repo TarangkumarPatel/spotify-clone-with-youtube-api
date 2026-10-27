@@ -8,7 +8,11 @@ A dynamic, full-stack evolution of the [Spotify UI Clone](../spotify-clone) — 
 
 - **Real search** — type in the search bar and get real songs/artists back.
 - **Real playback** — click any card to actually play the track (audio via a small embedded YouTube player).
-- **Full player controls** — play/pause, next/previous, seek, volume, shuffle, repeat.
+- **Full player controls** — play/pause, next/previous, seek, volume, mute, shuffle, repeat — every button reflects its current state (play ↔ pause, speaker ↔ muted, active toggles highlighted).
+- **Maximise the video** — expand the embedded player into a large theatre view (button in the player bar or on the video itself); close it with the same button, the backdrop, or `Esc`. Playback continues uninterrupted.
+- **Responsive / mobile-friendly** — on phones and tablets the sidebar becomes a "Your Library" panel, a bottom tab bar (Home / Search / Your Library) appears, and the player bar collapses into a compact two-row layout.
+- **Keyboard** — `Space` toggles play/pause (when not typing), `Esc` closes the maximised video or library panel.
+- **Resilient playback** — tracks that can't be embedded are skipped automatically, and clicks made before the YouTube player finishes loading are queued rather than lost.
 - **Likes** — heart a track, persisted in your browser.
 - **Recently played** — the "Recently Played" row reflects what you've actually played.
 - **Playlists** — create playlists and add the currently playing track to one, persisted in your browser (`localStorage`, no account needed).
@@ -45,7 +49,7 @@ api/search.js     → serverless function: GET /api/search?q=...
 server/dev.js      → local-only Express server (serves static files + /api/search)
 js/                → frontend logic (api, player, storage, ui, main)
 index.html          → same markup/classes as the original UI, dynamic content added
-style.css            → original styles untouched, small additive rules appended
+style.css            → original styles (plus small layout fixes), with responsive + feature rules appended
 ```
 
 ## ⚖️ A note on the YouTube embed
