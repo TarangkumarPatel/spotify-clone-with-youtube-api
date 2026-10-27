@@ -1,6 +1,19 @@
 const YOUTUBE_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search";
 const MUSIC_CATEGORY_ID = "10";
 
+const NAMED_ENTITIES = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " " };
+
+// The YouTube Data API returns titles HTML-encoded (e.g. "Rock &amp; Roll", "Don&#39;t").
+function decodeEntities(text = "") {
+  return text.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, code) => {
+    if (code[0] === "#") {
+      const num = code[1].toLowerCase() === "x" ? parseInt(code.slice(2), 16) : parseInt(code.slice(1), 10);
+      return num >= 0 && num <= 0x10ffff ? String.fromCodePoint(num) : match;
+    }
+    return NAMED_ENTITIES[code.toLowerCase()] ?? match;
+  });
+}
+
 module.exports = async function handler(req, res) {
   const apiKey = process.env.YOUTUBE_API_KEY;
   if (!apiKey) {
@@ -39,8 +52,8 @@ module.exports = async function handler(req, res) {
       .filter((item) => item.id && item.id.videoId)
       .map((item) => ({
         id: item.id.videoId,
-        title: item.snippet.title,
-        artist: item.snippet.channelTitle,
+        title: decodeEntities(item.snippet.title),
+        artist: decodeEntities(item.snippet.channelTitle),
         thumbnail:
           item.snippet.thumbnails?.high?.url ||
           item.snippet.thumbnails?.medium?.url ||

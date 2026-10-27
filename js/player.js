@@ -9,18 +9,35 @@ if (window.YT && window.YT.Player) {
 }
 
 let player = null;
+let playerReady = false;
 let timeUpdateInterval = null;
 
-export function initPlayer(mountElId, { onStateChange, onTimeUpdate }) {
+// Requests made before the IFrame player finishes loading are remembered and
+// applied once it's ready, so early clicks/volume changes aren't lost.
+let pendingVideoId = null;
+let desiredVolume = 100;
+let desiredMuted = false;
+
+export function initPlayer(mountElId, { onStateChange, onTimeUpdate, onError }) {
   return ytApiReady.then(
     () =>
       new Promise((resolve) => {
         player = new YT.Player(mountElId, {
-          height: "90",
-          width: "160",
-          playerVars: { controls: 1, disablekb: 1, modestbranding: 1 },
+          height: "100%",
+          width: "100%",
+          playerVars: { controls: 1, disablekb: 1, modestbranding: 1, playsinline: 1, rel: 0 },
           events: {
-            onReady: () => resolve(),
+            onReady: () => {
+              playerReady = true;
+              player.setVolume(desiredVolume);
+              if (desiredMuted) player.mute();
+              else player.unMute();
+              if (pendingVideoId) {
+                player.loadVideoById(pendingVideoId);
+                pendingVideoId = null;
+              }
+              resolve();
+            },
             onStateChange: (event) => {
               if (event.data === YT.PlayerState.PLAYING) {
                 startTimeUpdates(onTimeUpdate);
@@ -28,6 +45,10 @@ export function initPlayer(mountElId, { onStateChange, onTimeUpdate }) {
                 stopTimeUpdates();
               }
               onStateChange(event.data);
+            },
+            onError: (event) => {
+              stopTimeUpdates();
+              if (onError) onError(event.data);
             },
           },
         });
@@ -37,10 +58,12 @@ export function initPlayer(mountElId, { onStateChange, onTimeUpdate }) {
 
 function startTimeUpdates(onTimeUpdate) {
   stopTimeUpdates();
-  timeUpdateInterval = setInterval(() => {
+  const tick = () => {
     if (!player || typeof player.getCurrentTime !== "function") return;
     onTimeUpdate(player.getCurrentTime(), player.getDuration());
-  }, 500);
+  };
+  tick();
+  timeUpdateInterval = setInterval(tick, 500);
 }
 
 function stopTimeUpdates() {
@@ -50,37 +73,48 @@ function stopTimeUpdates() {
   }
 }
 
+export function isReady() {
+  return playerReady;
+}
+
 export function loadVideo(videoId) {
-  if (!player) return;
+  if (!playerReady) {
+    pendingVideoId = videoId;
+    return;
+  }
   player.loadVideoById(videoId);
 }
 
 export function play() {
-  if (player) player.playVideo();
+  if (playerReady) player.playVideo();
 }
 
 export function pause() {
-  if (player) player.pauseVideo();
+  if (playerReady) player.pauseVideo();
 }
 
 export function seekTo(seconds) {
-  if (player) player.seekTo(seconds, true);
+  if (playerReady) player.seekTo(seconds, true);
 }
 
 export function setVolume(volume) {
-  if (player) player.setVolume(volume);
+  desiredVolume = volume;
+  if (playerReady) player.setVolume(volume);
 }
 
 export function mute() {
-  if (player) player.mute();
+  desiredMuted = true;
+  if (playerReady) player.mute();
 }
 
 export function unmute() {
-  if (player) player.unMute();
+  desiredMuted = false;
+  if (playerReady) player.unMute();
 }
 
+// Tracked locally: YT's isMuted() can lag behind a mute()/unMute() call.
 export function isMuted() {
-  return player ? player.isMuted() : false;
+  return desiredMuted;
 }
 
 export const PlayerState = {
@@ -92,5 +126,8 @@ export const PlayerState = {
   },
   get ENDED() {
     return window.YT ? window.YT.PlayerState.ENDED : 0;
+  },
+  get BUFFERING() {
+    return window.YT ? window.YT.PlayerState.BUFFERING : 3;
   },
 };
